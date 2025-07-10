@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "919953137558",
+    "project_id": "hagzcora",
+    "storage_bucket": "hagzcora.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:919953137558:android:450996a571ebdea25bc7b7",
+        "android_client_info": {
+          "package_name": "com.example.hagzcoora"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "919953137558-moat5f9r7susj97dq70or0kc7dgagqkq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.hagzcoora",
+            "certificate_hash": "a2b96d03ba22d093b54931e5b35210cbe6e63a1e"
+          }
+        },
+        {
+          "client_id": "919953137558-ns288gtiff2bln7634pslbqdhetrd5it.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtDV30BX-_J0iC9r1z5MC6q91EsJaFlRQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "919953137558-ns288gtiff2bln7634pslbqdhetrd5it.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "919953137558-f0i8s3fth5os5dh32hn45blvrpjg2m6h.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.hagzcoora"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

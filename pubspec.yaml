@@ -37,11 +37,11 @@ dependencies:
   provider: ^6.1.2
   
   # Firebase
-  firebase_core: ^2.24.2
-  firebase_auth: ^4.15.3
-  cloud_firestore: ^4.13.6
-  firebase_messaging: ^14.7.10
-  firebase_storage: ^11.5.6
+  firebase_core: ^3.6.0
+  firebase_auth: ^5.3.1
+  cloud_firestore: ^5.4.3
+  firebase_messaging: ^15.1.3
+  firebase_storage: ^12.3.2
   
   # Authentication
   google_sign_in: ^6.2.1
@@ -57,8 +57,8 @@ dependencies:
   image_picker: ^1.0.4
   cached_network_image: ^3.3.0
   
-  # Notifications (temporarily disabled due to compilation issues)
-  # flutter_local_notifications: ^13.0.0
+  # Notifications
+  # flutter_local_notifications: ^16.3.2
   
   # UI Components
   flutter_svg: ^2.0.9
@@ -66,6 +66,7 @@ dependencies:
   
   # Permissions
   permission_handler: ^11.1.0
+  go_router: ^16.1.0
 
 dev_dependencies:
   flutter_test:

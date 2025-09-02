@@ -1,89 +1,93 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
+/// User model for storing user data in Firestore
 class UserModel {
-  final String id;
+  final String uid;
   final String email;
-  final String username;
   final String displayName;
-  final String? profilePictureUrl;
-  final bool isActive;
+  final String? photoURL;
   final DateTime createdAt;
-  final DateTime lastSeen;
-  final List<String> friendIds;
-  final List<String> pendingFriendRequests;
-  final List<String> sentFriendRequests;
+  final DateTime updatedAt;
 
-  UserModel({
-    required this.id,
+  const UserModel({
+    required this.uid,
     required this.email,
-    required this.username,
     required this.displayName,
-    this.profilePictureUrl,
-    required this.isActive,
+    this.photoURL,
     required this.createdAt,
-    required this.lastSeen,
-    this.friendIds = const [],
-    this.pendingFriendRequests = const [],
-    this.sentFriendRequests = const [],
+    required this.updatedAt,
   });
 
-  factory UserModel.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
-    return UserModel(
-      id: doc.id,
-      email: data['email'] ?? '',
-      username: data['username'] ?? '',
-      displayName: data['displayName'] ?? '',
-      profilePictureUrl: data['profilePictureUrl'],
-      isActive: data['isActive'] ?? true,
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
-      lastSeen: (data['lastSeen'] as Timestamp).toDate(),
-      friendIds: List<String>.from(data['friendIds'] ?? []),
-      pendingFriendRequests: List<String>.from(data['pendingFriendRequests'] ?? []),
-      sentFriendRequests: List<String>.from(data['sentFriendRequests'] ?? []),
-    );
-  }
-
-  Map<String, dynamic> toFirestore() {
+  /// Convert UserModel to Map for Firestore
+  Map<String, dynamic> toMap() {
     return {
+      'uid': uid,
       'email': email,
-      'username': username,
       'displayName': displayName,
-      'profilePictureUrl': profilePictureUrl,
-      'isActive': isActive,
-      'createdAt': Timestamp.fromDate(createdAt),
-      'lastSeen': Timestamp.fromDate(lastSeen),
-      'friendIds': friendIds,
-      'pendingFriendRequests': pendingFriendRequests,
-      'sentFriendRequests': sentFriendRequests,
+      'photoURL': photoURL,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
     };
   }
 
-  UserModel copyWith({
-    String? id,
-    String? email,
-    String? username,
-    String? displayName,
-    String? profilePictureUrl,
-    bool? isActive,
-    DateTime? createdAt,
-    DateTime? lastSeen,
-    List<String>? friendIds,
-    List<String>? pendingFriendRequests,
-    List<String>? sentFriendRequests,
-  }) {
+  /// Create UserModel from Firestore document
+  factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      id: id ?? this.id,
-      email: email ?? this.email,
-      username: username ?? this.username,
-      displayName: displayName ?? this.displayName,
-      profilePictureUrl: profilePictureUrl ?? this.profilePictureUrl,
-      isActive: isActive ?? this.isActive,
-      createdAt: createdAt ?? this.createdAt,
-      lastSeen: lastSeen ?? this.lastSeen,
-      friendIds: friendIds ?? this.friendIds,
-      pendingFriendRequests: pendingFriendRequests ?? this.pendingFriendRequests,
-      sentFriendRequests: sentFriendRequests ?? this.sentFriendRequests,
+      uid: map['uid'] ?? '',
+      email: map['email'] ?? '',
+      displayName: map['displayName'] ?? '',
+      photoURL: map['photoURL'],
+      createdAt: DateTime.parse(map['createdAt']),
+      updatedAt: DateTime.parse(map['updatedAt']),
     );
   }
+
+  /// Create UserModel from Firebase User
+  factory UserModel.fromFirebaseUser(
+    String uid,
+    String email,
+    String displayName,
+    String? photoURL,
+  ) {
+    final now = DateTime.now();
+    return UserModel(
+      uid: uid,
+      email: email,
+      displayName: displayName,
+      photoURL: photoURL,
+      createdAt: now,
+      updatedAt: now,
+    );
+  }
+
+  /// Create a copy of UserModel with updated fields
+  UserModel copyWith({
+    String? uid,
+    String? email,
+    String? displayName,
+    String? photoURL,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return UserModel(
+      uid: uid ?? this.uid,
+      email: email ?? this.email,
+      displayName: displayName ?? this.displayName,
+      photoURL: photoURL ?? this.photoURL,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'UserModel(uid: $uid, email: $email, displayName: $displayName, photoURL: $photoURL, createdAt: $createdAt, updatedAt: $updatedAt)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is UserModel && other.uid == uid;
+  }
+
+  @override
+  int get hashCode => uid.hashCode;
 }

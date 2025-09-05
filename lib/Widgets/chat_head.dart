@@ -1,4 +1,61 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
+
+// Helper function to create proper image widget based on image source
+Widget _buildChatImage(String imageUrl, {double radius = 28}) {
+  if (imageUrl.isEmpty) {
+    return CircleAvatar(
+      radius: radius,
+      backgroundColor: Colors.grey[300],
+      child: Image.asset("assets/images/football-ball.png"),
+    );
+  } else if (imageUrl.startsWith('assets/')) {
+    // Asset image
+    return CircleAvatar(
+      radius: radius,
+      backgroundColor: Colors.grey[300],
+      child: ClipOval(
+        child: Image.asset(
+          imageUrl,
+          width: radius * 2,
+          height: radius * 2,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Image.asset("assets/images/football-ball.png");
+          },
+        ),
+      ),
+    );
+  } else if (imageUrl.startsWith('http')) {
+    // Network image
+    return CircleAvatar(
+      radius: radius,
+      backgroundColor: Colors.grey[300],
+      backgroundImage: NetworkImage(imageUrl),
+      child: null,
+      onBackgroundImageError: (exception, stackTrace) {
+        // This will show the backgroundColor if image fails
+      },
+    );
+  } else {
+    // File image (from gallery)
+    return CircleAvatar(
+      radius: radius,
+      backgroundColor: Colors.grey[300],
+      child: ClipOval(
+        child: Image.file(
+          File(imageUrl),
+          width: radius * 2,
+          height: radius * 2,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Image.asset("assets/images/football-ball.png");
+          },
+        ),
+      ),
+    );
+  }
+}
 
 Widget chatHead({
   required String name,
@@ -19,6 +76,11 @@ Widget chatHead({
   MessageType messageType = MessageType.text,
   VoidCallback? onTap,
   VoidCallback? onLongPress,
+  VoidCallback? onProfileTap,
+  VoidCallback? onMute,
+  VoidCallback? onDelete,
+  Function(String)? onMessageSend,
+  Function(bool)? onMuteToggle,
 }) {
   return Container(
     color: Colors.white,
@@ -32,15 +94,9 @@ Widget chatHead({
             // Profile Picture with Online Status
             Stack(
               children: [
-                CircleAvatar(
-                  radius: 28,
-                  backgroundColor: Colors.grey[300],
-                  backgroundImage: imageUrl.isNotEmpty 
-                    ? NetworkImage(imageUrl)
-                    : null,
-                  child: imageUrl.isEmpty 
-                    ? Icon(Icons.person, size: 32, color: Colors.grey[600])
-                    : null,
+                GestureDetector(
+                  onTap: onProfileTap,
+                  child: _buildChatImage(imageUrl),
                 ),
                 if (isOnline)
                   Positioned(
@@ -222,6 +278,76 @@ Widget chatHead({
                 ),
               ],
             ),
+            
+            // Action Buttons (visible on long press or when needed)
+            if (onMute != null || onDelete != null)
+              PopupMenuButton<String>(
+                icon: Icon(
+                  Icons.more_vert,
+                  size: 18,
+                  color: Colors.grey[600],
+                ),
+                onSelected: (value) {
+                  switch (value) {
+                    case 'mute':
+                      if (onMuteToggle != null) {
+                        onMuteToggle(!isMuted);
+                      } else if (onMute != null) {
+                        onMute();
+                      }
+                      break;
+                    case 'delete':
+                      if (onDelete != null) onDelete();
+                      break;
+                  }
+                },
+                itemBuilder: (BuildContext context) {
+                  List<PopupMenuEntry<String>> items = [];
+                  
+                  if (onMuteToggle != null || onMute != null) {
+                    items.add(
+                      PopupMenuItem<String>(
+                        value: 'mute',
+                        child: Row(
+                          children: [
+                            Icon(
+                              isMuted ? Icons.volume_up : Icons.volume_off,
+                              size: 18,
+                              color: Colors.grey[600],
+                            ),
+                            const SizedBox(width: 8),
+                            Text(isMuted ? 'Unmute' : 'Mute'),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                  
+                  if (onDelete != null) {
+                    items.add(
+                      PopupMenuItem<String>(
+                        value: 'delete',
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.delete,
+                              size: 18,
+                              color: Colors.red,
+                            ),
+                            const SizedBox(width: 8),
+                            const Text(
+                              'Delete',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                  
+                  return items;
+                },
+              ),
           ],
         ),
       ),

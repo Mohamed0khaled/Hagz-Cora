@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import 'auth/login_screen.dart';
-import 'homescreen.dart';
+import 'main_navigation_screen.dart';
 
 /// Authentication Wrapper
 /// Decides which screen to show based on authentication state
@@ -34,7 +34,7 @@ class AuthWrapper extends StatelessWidget {
 
         // Show appropriate screen based on authentication status
         if (authProvider.isAuthenticated) {
-          return HomePage();
+          return const MainNavigationScreen();
         } else {
           return const LoginScreen();
         }

@@ -23,7 +23,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
   final _displayNameController = TextEditingController();
   final _focusNode = FocusNode();
   final ImagePicker _imagePicker = ImagePicker();
-  
+
   File? _selectedImage;
   bool _hasChanges = false;
 
@@ -48,9 +48,10 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
 
   void _onDisplayNameChanged() {
     final authProvider = context.read<AuthProvider>();
-    final hasDisplayNameChanged = _displayNameController.text != authProvider.displayName;
+    final hasDisplayNameChanged =
+        _displayNameController.text != authProvider.displayName;
     final hasImageChanged = _selectedImage != null;
-    
+
     setState(() {
       _hasChanges = hasDisplayNameChanged || hasImageChanged;
     });
@@ -61,9 +62,17 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
     return Scaffold(
       backgroundColor: AppConstants.backgroundColor,
       appBar: AppBar(
-        title: const Text('Profile Settings'),
-        backgroundColor: AppConstants.surfaceColor,
-        elevation: 0,
+        elevation: 1,
+        backgroundColor: const Color(0xFF2E7D32),
+        foregroundColor: Colors.white,
+        title: const Text(
+          'Profile',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: 28,
+          ),
+        ),
         actions: [
           Consumer<AuthProvider>(
             builder: (context, authProvider, child) {
@@ -90,9 +99,15 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                     value: 'deleteAccount',
                     child: Row(
                       children: [
-                        Icon(Icons.delete_forever, color: AppConstants.errorColor),
+                        Icon(
+                          Icons.delete_forever,
+                          color: AppConstants.errorColor,
+                        ),
                         SizedBox(width: 8),
-                        Text('Delete Account', style: TextStyle(color: AppConstants.errorColor)),
+                        Text(
+                          'Delete Account',
+                          style: TextStyle(color: AppConstants.errorColor),
+                        ),
                       ],
                     ),
                   ),
@@ -116,11 +131,15 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                       // Profile Picture
                       CircleAvatar(
                         radius: 60,
-                        backgroundColor: AppConstants.primaryColor.withOpacity(0.1),
+                        backgroundColor: AppConstants.primaryColor.withOpacity(
+                          0.1,
+                        ),
                         backgroundImage: _getProfileImage(authProvider),
                         child: _getProfileImage(authProvider) == null
                             ? Text(
-                                format_utils.FormatUtils.getInitials(authProvider.displayName),
+                                format_utils.FormatUtils.getInitials(
+                                  authProvider.displayName,
+                                ),
                                 style: const TextStyle(
                                   fontSize: 36,
                                   fontWeight: FontWeight.w500,
@@ -139,8 +158,13 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                             shape: BoxShape.circle,
                           ),
                           child: IconButton(
-                            icon: const Icon(Icons.camera_alt, color: Colors.white),
-                            onPressed: authProvider.isLoading ? null : _selectImage,
+                            icon: const Icon(
+                              Icons.camera_alt,
+                              color: Colors.white,
+                            ),
+                            onPressed: authProvider.isLoading
+                                ? null
+                                : _selectImage,
                           ),
                         ),
                       ),
@@ -160,7 +184,9 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                     labelText: 'Display Name',
                     prefixIcon: const Icon(Icons.person),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(AppConstants.radiusMedium),
+                      borderRadius: BorderRadius.circular(
+                        AppConstants.radiusMedium,
+                      ),
                     ),
                     filled: true,
                     fillColor: AppConstants.surfaceColor,
@@ -179,7 +205,9 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                     labelText: 'Email',
                     prefixIcon: const Icon(Icons.email),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(AppConstants.radiusMedium),
+                      borderRadius: BorderRadius.circular(
+                        AppConstants.radiusMedium,
+                      ),
                     ),
                     filled: true,
                     fillColor: Colors.grey.withOpacity(0.1),
@@ -193,12 +221,16 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                   width: double.infinity,
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: (authProvider.isLoading || !_hasChanges) ? null : _saveProfile,
+                    onPressed: (authProvider.isLoading || !_hasChanges)
+                        ? null
+                        : _saveProfile,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppConstants.primaryColor,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppConstants.radiusMedium),
+                        borderRadius: BorderRadius.circular(
+                          AppConstants.radiusMedium,
+                        ),
                       ),
                     ),
                     child: authProvider.isLoading
@@ -210,9 +242,9 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                               strokeWidth: 2,
                             ),
                           )
-                        : const Text(
+                        : Text(
                             'Save Changes',
-                            style: AppConstants.labelLarge,
+                            style: AppConstants.labelLarge(context),
                           ),
                   ),
                 ),
@@ -224,7 +256,9 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                     padding: const EdgeInsets.all(AppConstants.paddingMedium),
                     decoration: BoxDecoration(
                       color: AppConstants.errorColor.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(AppConstants.radiusMedium),
+                      borderRadius: BorderRadius.circular(
+                        AppConstants.radiusMedium,
+                      ),
                       border: Border.all(
                         color: AppConstants.errorColor.withOpacity(0.3),
                       ),
@@ -262,7 +296,8 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
   ImageProvider? _getProfileImage(AuthProvider authProvider) {
     if (_selectedImage != null) {
       return FileImage(_selectedImage!);
-    } else if (authProvider.photoURL != null && authProvider.photoURL!.isNotEmpty) {
+    } else if (authProvider.photoURL != null &&
+        authProvider.photoURL!.isNotEmpty) {
       return NetworkImage(authProvider.photoURL!);
     }
     return null;
@@ -280,7 +315,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
 
       if (pickedFile != null) {
         final file = File(pickedFile.path);
-        
+
         // Check file size
         final fileSize = await file.length();
         if (fileSize > AppConstants.maxImageSizeBytes) {
@@ -330,18 +365,22 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
     final displayName = _displayNameController.text.trim();
 
     // Save profile
-    authProvider.updateUserProfile(
-      displayName: displayName != authProvider.displayName ? displayName : null,
-      profileImage: _selectedImage,
-    ).then((_) {
-      if (authProvider.error == null) {
-        setState(() {
-          _selectedImage = null;
-          _hasChanges = false;
+    authProvider
+        .updateUserProfile(
+          displayName: displayName != authProvider.displayName
+              ? displayName
+              : null,
+          profileImage: _selectedImage,
+        )
+        .then((_) {
+          if (authProvider.error == null) {
+            setState(() {
+              _selectedImage = null;
+              _hasChanges = false;
+            });
+            UIUtils.showSnackBar(context, 'Profile updated successfully');
+          }
         });
-        UIUtils.showSnackBar(context, 'Profile updated successfully');
-      }
-    });
   }
 
   /// Show sign out confirmation dialog

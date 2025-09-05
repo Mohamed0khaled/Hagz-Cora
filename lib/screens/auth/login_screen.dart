@@ -69,15 +69,15 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         const SizedBox(height: AppConstants.paddingLarge),
-                        const Text(
+                        Text(
                           'Welcome to HagzCoora',
-                          style: AppConstants.headlineMedium,
+                          style: AppConstants.headlineMedium(context),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: AppConstants.paddingMedium),
                         Text(
                           'Your ultimate football companion app',
-                          style: AppConstants.bodyLarge.copyWith(color: Colors.grey),
+                          style: AppConstants.bodyLarge(context).copyWith(color: Colors.grey),
                           textAlign: TextAlign.center,
                         ),
                       ],
